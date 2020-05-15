@@ -124,4 +124,6 @@ Travis CI is integrated with my Github profile and so when this file is checked 
 
 ![Alt text](/screenshots/travis-1.PNG "TravisCI UI")
 
+![Alt text](/screenshots/Travis-details.PNG "TravisCI Details")
+
 ![Alt text](/screenshots/UI.PNG "Application UI")
