@@ -33,7 +33,7 @@ After separting the 2 services and resolving the code dependencies and setting e
 Post that, I've run npm run dev for the service to test them locally. After that I ran the services as npm run build to check for any other errors in the build process.
 The application won't run in local as both the service are configured to run on port 8080. To resolve this, we use the reverseproxy. After we run the reverseproxy service, the application starts working in localhost in UI.
 
-![Alt text](/screenshots/Local-run.png "Local Deployment")
+![Alt text](/screenshots/Local-run.PNG "Local Deployment")
 
 ### 3. Build Docker Images and push to docker registry:
 
