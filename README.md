@@ -1,4 +1,4 @@
-# nd990-c3-microservices-v1
+# Udacity-Udagram-Microservice
 This repository is associated with Cloud Developer ND - Course 03 - Monolith to Microservices. There are 6 lessons in this course. There is separate directory for each lesson.
 
 # About the Project - Udagram Image Filtering Microservice
@@ -63,3 +63,87 @@ Lesson 4 of this course would require you to install any one tool for creating a
 
 ### 6. Travis CI
 Lesson 6 of this course would require you to use Travis CI. You would have to sign-up on  Travis-ci.com using your GitHub account credentials and then create a `.travis.yml` for your project. [Refer this tutorial to get started with Travis CI](https://docs.travis-ci.com/user/tutorial/).
+
+
+## Project:
+
+Project consists of multiple parts:
+
+### 1.Convert monolith udagram application to microservice
+Applying the rules and conventions of microservices and keeping in mind the advantages and disadvantages of both monolith and microservice, I've split the udagram monolith application's backend restApi implementation into 2 parts - Feed and User.
+We already had frontend separate and we add a nginx proxy - reverseproxy service to handle and route the incoming traffic to the appropriate service. Nginx proxy configuration is specified in nginx.conf file.
+
+### 2. Building the services locally:
+After separting the 2 services and resolving the code dependencies and setting environment variables in profile, I have installed npm packages using npm i.
+Post that, I've run npm run dev for the service to test them locally. After that I ran the services as npm run build to check for any other errors in the build process.
+The application won't run in local as both the service are configured to run on port 8080. To resolve this, we use the reverseproxy. After we run the reverseproxy service, the application starts working in localhost in UI.
+
+### 3. Build Docker Images and push to docker registry:
+Once dev test is complete, we will build the docker images. After installing docker, I verified using: 
+
+$ docker -v
+
+Docker version: 19.03.8, build afacb8b7f0 
+
+I built the docker images individually first using:
+
+$ docker build -t user .
+
+I verified that the images were created using:
+
+$ docker images
+
+Started a container using:
+
+$ docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DATABASE=$POSTGRESS_DATABASE --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_MEDIA_BUCKET=$AWS_MEDIA_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed rahulpal210991/udacity-restapi-feed
+
+Finally, I configued docker-compose and built all the images together using docker-compose using:
+
+$ docker-compose -f docker-compose-build.yaml build
+
+
+Started the application using:
+
+$ docker-compose up
+
+Verified my changes. Then I pushed the docker images to my docker repository:
+
+$ docker push rahulpal210991/udacity-restapi-feed
+
+
+### 4. Deploy into Kubernetes:
+
+I setup AWS EKS cluster and added 2 nodes in node group. Configured kubectl in my local and updated kubeconfig to interact with my k8s cluster.
+
+I created the env-configMap.yaml, aws-secret.yaml and env-secret.yaml files for configuration of environment variables and credentials which will be used by the containers running on pods.
+Created the deployment and service yaml files for the 4 microservices - reverseproxy, frontend, feed and user. 
+After applying the secrets and env files, the deployment files were applied to create the pods on worker nodes using:
+
+$ kubectl apply -f backend-feed-deployment.yaml
+
+Applied the service configuration on top of it.
+
+$ kubectl apply -f backend-feed-service.yaml
+
+Did the same for all the 4 services. Then checked the environment using the following commands:
+
+$ kubectl get nodes
+
+$ kubectl get pods
+
+$ kubectl get rs
+
+$ kubectl get svc
+
+$ kubectl get deploy
+
+Finally, started the UI and verified that the application is working.
+
+In order to verify rolling update, updated a deployment yaml file with updated version and applied that deployment.
+Old pods got terminated and new pods were spring up. Old replicaSet still exists with 0 pods giving the option of rollback.
+
+### 5. Continuous Integration using Travis CI:
+
+Added the .travis.yml file in the root scope of the project which lists the steps to execute for build and deploy.
+Travis CI is integrated with my Github profile and so when this file is checked into Github, build is triggered automatically which build the project, builds the docker images and then finally pushed the docker images to Docker repository.
+
