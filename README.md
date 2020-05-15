@@ -51,6 +51,8 @@ I verified that the images were created using:
 
 >$ docker images
 
+![Alt text](/screenshots/docker-images.PNG "Docker Images")
+
 Started a container using:
 
 >$ docker run --rm --publish 8080:8080 -v $HOME/.aws:/root/.aws --env POSTGRESS_HOST=$POSTGRESS_HOST --env POSTGRESS_USERNAME=$POSTGRESS_USERNAME --env POSTGRESS_PASSWORD=$POSTGRESS_PASSWORD --env POSTGRESS_DATABASE=$POSTGRESS_DATABASE --env AWS_REGION=$AWS_REGION --env AWS_PROFILE=$AWS_PROFILE --env AWS_MEDIA_BUCKET=$AWS_MEDIA_BUCKET --env JWT_SECRET=$JWT_SECRET --name feed rahulpal210991/udacity-restapi-feed
@@ -63,14 +65,23 @@ Started the application using:
 
 >$ docker-compose up
 
+![Alt text](/screenshots/docker-compose%20up.PNG "Docker compose up")
+
 Verified my changes. Then I pushed the docker images to my docker repository:
 
 >$ docker push rahulpal210991/udacity-restapi-feed
+
+![Alt text](/screenshots/dockerhub.PNG "DockerHub")
+
 
 
 ### 4. Deploy into Kubernetes:
 
 I setup AWS EKS cluster and added 2 nodes in node group. Configured kubectl in my local and updated kubeconfig to interact with my k8s cluster.
+
+![Alt text](/screenshots/eks-cluster.PNG "AWS EKS Cluster")
+
+![Alt text](/screenshots/nodegrp.PNG "Worker Nodes")
 
 I created the env-configMap.yaml, aws-secret.yaml and env-secret.yaml files for configuration of environment variables and credentials which will be used by the containers running on pods.
 Created the deployment and service yaml files for the 4 microservices - reverseproxy, frontend, feed and user. 
@@ -96,13 +107,21 @@ $ kubectl get svc
 $ kubectl get deploy
 ```
 
+![Alt text](/screenshots/k8s-details.PNG "Kuberneter Commands")
+
+
 Finally, started the UI and verified that the application is working.
 
 In order to verify rolling update, updated a deployment yaml file with updated version and applied that deployment.
 Old pods got terminated and new pods were spring up. Old replicaSet still exists with 0 pods giving the option of rollback.
+
+![Alt text](/screenshots/rolling-update.PNG "Rolling Update")
 
 ### 5. Continuous Integration using Travis CI:
 
 Added the .travis.yml file in the root scope of the project which lists the steps to execute for build and deploy.
 Travis CI is integrated with my Github profile and so when this file is checked into Github, build is triggered automatically which build the project, builds the docker images and then finally pushed the docker images to Docker repository.
 
+![Alt text](/screenshots/travis-1.PNG "TravisCI UI")
+
+![Alt text](/screenshots/UI.PNG "Application UI")
