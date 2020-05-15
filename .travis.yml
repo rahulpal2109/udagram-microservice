@@ -17,3 +17,9 @@ before_install:
 
 install:
   - docker-compose -f exercises/udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel
+  - docker images
+  - docker push rahulpal210991/udacity-restapi-user
+  - docker push rahulpal210991/udacity-restapi-feed
+  - docker push rahulpal210991/udacity-frontend:local
+  - docker push rahulpal210991/reverseproxy
+
