@@ -129,7 +129,3 @@ Travis CI is integrated with my Github profile and so when this file is checked 
 ![Alt text](/screenshots/UI.PNG "Application UI")
 
 <br>
-
-## Project Review 
-
-![Alt text](/screenshots/review.PNG "Project Review")
